@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Investimentos Inteligentes</title>
+    <title>AliTech | Simulador Personalizado</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -19,10 +19,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
-
         body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; }
 
-        /* HEADER */
         header {
             background: rgba(10, 25, 47, 0.95);
             padding: 1rem 5%;
@@ -32,268 +30,172 @@
             backdrop-filter: blur(10px);
         }
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
+
+        .hero { padding: 140px 5% 40px; text-align: center; }
         
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav a { text-decoration: none; color: var(--text-light); font-size: 0.9rem; transition: 0.3s; }
-        nav a:hover { color: var(--accent); }
-
-        /* HERO */
-        .hero {
-            padding: 160px 5% 80px;
-            text-align: center;
-            background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%);
-        }
-        .hero h1 { font-size: 2.8rem; color: var(--white); margin-bottom: 1rem; }
-        .hero p { color: var(--text-gray); max-width: 800px; margin: 0 auto 2rem; font-size: 1.1rem; }
-
-        /* SIMULADOR */
-        .simulator-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .input-box {
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        .setup-box {
             background: var(--bg-card);
-            padding: 40px; border-radius: 12px;
-            text-align: center; margin-bottom: 40px;
-            border: 1px solid var(--secondary);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 30px; border-radius: 12px;
+            margin-bottom: 30px; border: 1px solid var(--secondary);
         }
-        .input-box h3 { margin-bottom: 15px; color: var(--white); }
+
         input[type="number"] {
-            padding: 15px; width: 100%; max-width: 350px;
-            border-radius: 5px; border: 2px solid var(--secondary); 
-            background: var(--primary); color: var(--white);
-            font-size: 1.2rem; margin: 10px; outline: none;
+            padding: 12px; width: 250px; border-radius: 5px; border: 1px solid var(--secondary);
+            background: var(--primary); color: var(--white); font-size: 1.1rem; margin-right: 10px;
         }
-        input[type="number"]:focus { border-color: var(--accent); }
 
         .btn {
             background: var(--accent); color: var(--primary);
-            padding: 16px 35px; border: none; border-radius: 5px;
+            padding: 12px 25px; border: none; border-radius: 5px;
             font-weight: bold; cursor: pointer; transition: 0.3s;
-            text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn:hover { background: #52d1b2; transform: translateY(-2px); }
+
+        /* SELEÇÃO DE ATIVOS */
+        .selection-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; margin: 25px 0; text-align: left;
+        }
+        .select-item {
+            background: var(--secondary); padding: 10px; border-radius: 5px;
+            display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.85rem;
+        }
+        .select-item input { accent-color: var(--accent); }
 
         /* RESULTADOS */
+        .summary-bar {
+            background: var(--accent); color: var(--primary);
+            padding: 20px; border-radius: 8px; margin-bottom: 20px;
+            display: none; justify-content: space-around; font-weight: bold;
+        }
+
         .results-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 25px; margin-top: 30px; display: none; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; display: none; 
         }
-        .category-card {
-            background: var(--bg-card); padding: 25px;
-            border-radius: 10px; border-top: 4px solid var(--accent);
-            transition: 0.3s;
-        }
-        .category-card:hover { transform: translateY(-5px); }
-        .category-card h3 { color: var(--gold); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .investment-item {
-            list-style: none; padding: 12px 0; border-bottom: 1px solid #233554;
-        }
-        .asset-info { display: flex; justify-content: space-between; font-weight: 500; }
-        .validation-label { font-size: 0.75rem; margin-top: 5px; display: block; }
+        .card { background: var(--bg-card); padding: 20px; border-radius: 10px; border-left: 4px solid var(--accent); }
+        .item { border-bottom: 1px solid #233554; padding: 10px 0; }
+        .val-msg { font-size: 0.75rem; display: block; margin-top: 4px; }
 
-        /* SEÇÃO EDUCATIVA */
-        .how-it-works { padding: 80px 5%; background: var(--secondary); }
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 40px; }
-        .feature-card { background: var(--primary); padding: 30px; border-radius: 8px; text-align: center; }
-        .feature-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; }
-
-        /* FOOTER */
-        footer { padding: 60px 5% 30px; text-align: center; border-top: 1px solid var(--secondary); }
-        .disclaimer { font-size: 0.8rem; color: var(--text-gray); max-width: 800px; margin: 20px auto 0; line-height: 1.4; }
-
-        @media (max-width: 768px) { .hero h1 { font-size: 2rem; } }
+        footer { padding: 40px; text-align: center; font-size: 0.8rem; color: var(--text-gray); }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">AliTech</div>
-        <nav>
-            <ul>
-                <li><a href="#">Início</a></li>
-                <li><a href="#simulador">Simulador</a></li>
-                <li><a href="#educativo">Como Funciona</a></li>
-                <li><a href="#">Contato</a></li>
-            </ul>
-        </nav>
     </header>
 
     <section class="hero">
-        <h1>Carteira Diversificada AliTech</h1>
-        <p>Divida seu capital de forma inteligente entre os melhores ativos do mercado. Nossa tecnologia valida os preços mínimos e redistribui seu dinheiro automaticamente para otimizar sua entrada.</p>
-        
-        <div class="simulator-container" id="simulador">
-            <div class="input-box">
-                <h3>Quanto deseja investir hoje?</h3>
-                <input type="number" id="totalValue" placeholder="Digite o valor em R$ (ex: 5000)" min="10">
-                <br>
-                <button class="btn" onclick="calculate()">Simular Distribuição</button>
-            </div>
-
-            <div id="resultsGrid" class="results-grid">
-                </div>
-        </div>
+        <h1>Simulador Personalizado</h1>
+        <p>Escolha seus ativos e defina quanto quer investir. O sistema calculará a viabilidade automaticamente.</p>
     </section>
 
-    <section id="educativo" class="how-it-works">
-        <div style="max-width: 1000px; margin: 0 auto; text-align: center;">
-            <h2>Por que diversificar com a AliTech?</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <i class="fas fa-chart-pie"></i>
-                    <h4>Divisão Equilibrada</h4>
-                    <p>Dividimos seu aporte em 5 categorias principais para que nenhum setor domine seu risco.</p>
+    <div class="container">
+        <div class="setup-box">
+            <h3>1. Configure seu Aporte</h3>
+            <input type="number" id="totalVal" placeholder="Valor Total R$" min="1">
+            <button class="btn" onclick="process()">SIMULAR CARTEIRA</button>
+
+            <h3 style="margin-top: 30px;">2. Selecione onde quer investir:</h3>
+            <div id="selectionArea" class="selection-grid">
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-sync-alt"></i>
-                    <h4>Redistribuição Ativa</h4>
-                    <p>Se um ativo exige um valor mínimo que você não possui no momento, redistribuímos esse saldo para outros ativos viáveis.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h4>Foco em Segurança</h4>
-                    <p>Mesclamos a proteção da Renda Fixa com o potencial de crescimento das Criptomoedas e Ações.</p>
-                </div>
-            </div>
         </div>
-    </section>
+
+        <div id="summary" class="summary-bar">
+            <span id="sumInvested"></span>
+            <span id="sumLeft" style="color: #b30000;"></span>
+        </div>
+
+        <div id="results" class="results-grid"></div>
+    </div>
 
     <footer>
-        <p>&copy; 2025 AliTech – Tecnologia em Soluções Digitais</p>
-        <div class="disclaimer">
-            <strong>Aviso Legal:</strong> Este simulador tem caráter meramente educativo e ilustrativo. Os valores de "preço mínimo" são estimativas de mercado. Esta ferramenta não constitui recomendação de investimento, consultoria financeira ou oferta de compra e venda de ativos. Invista com consciência.
-        </div>
+        © 2025 AliTech - Educativo. Saldo residual é o valor que não atingiu o mínimo necessário para compra.
     </footer>
 
     <script>
-        const categories = [
-            {
-                name: "Renda Fixa",
-                assets: [
-                    { name: "Tesouro Selic", min: 35.00 },
-                    { name: "Tesouro IPCA+", min: 35.00 },
-                    { name: "CDBs Diversos", min: 1.00 },
-                    { name: "LCI", min: 50.00 },
-                    { name: "LCA", min: 50.00 }
-                ]
-            },
-            {
-                name: "Renda Variável",
-                assets: [
-                    { name: "Ações Consolidadas", min: 25.00 },
-                    { name: "Ações Dividendos", min: 15.00 },
-                    { name: "Small Caps", min: 10.00 },
-                    { name: "BDRs", min: 10.00 },
-                    { name: "ETFs", min: 60.00 }
-                ]
-            },
-            {
-                name: "Fundos de Investimento",
-                assets: [
-                    { name: "Multimercado", min: 100.00 },
-                    { name: "Fundo Renda Fixa", min: 1.00 },
-                    { name: "Fundo de Ações", min: 100.00 },
-                    { name: "Fundo Cambial", min: 50.00 },
-                    { name: "Fundo Internacional", min: 100.00 }
-                ]
-            },
-            {
-                name: "FIIs (Imobiliário)",
-                assets: [
-                    { name: "FII Shoppings", min: 10.00 },
-                    { name: "FII Logística", min: 10.00 },
-                    { name: "FII Escritórios", min: 100.00 },
-                    { name: "FII Papel", min: 10.00 },
-                    { name: "FII Híbrido", min: 100.00 }
-                ]
-            },
-            {
-                name: "Criptomoedas",
-                assets: [
-                    { name: "Bitcoin (BTC)", min: 1.00 },
-                    { name: "Ethereum (ETH)", min: 1.00 },
-                    { name: "Solana (SOL)", min: 10.00 },
-                    { name: "Binance Coin (BNB)", min: 10.00 },
-                    { name: "Polygon (MATIC)", min: 1.00 }
-                ]
-            }
+        const assetsData = [
+            { id: 0, name: "Tesouro Selic", min: 35.00, cat: "Renda Fixa" },
+            { id: 1, name: "Tesouro IPCA+", min: 35.00, cat: "Renda Fixa" },
+            { id: 2, name: "CDB Liquidez", min: 1.00, cat: "Renda Fixa" },
+            { id: 3, name: "Ações Dividendos", min: 20.00, cat: "Variável" },
+            { id: 4, name: "Ações Tech", min: 50.00, cat: "Variável" },
+            { id: 5, name: "BDR Global", min: 15.00, cat: "Variável" },
+            { id: 6, name: "FII Logística", min: 10.00, cat: "Imobiliário" },
+            { id: 7, name: "FII Shoppings", min: 10.00, cat: "Imobiliário" },
+            { id: 8, name: "FII Papel", min: 10.00, cat: "Imobiliário" },
+            { id: 9, name: "Bitcoin", min: 1.00, cat: "Cripto" },
+            { id: 10, name: "Ethereum", min: 1.00, cat: "Cripto" },
+            { id: 11, name: "Solana", min: 10.00, cat: "Cripto" }
         ];
 
-        function calculate() {
-            const val = parseFloat(document.getElementById('totalValue').value);
-            if (!val || val <= 0) { 
-                alert("Por favor, insira um valor válido para simular sua carteira."); 
-                return; 
+        // Gerar interface de seleção
+        const area = document.getElementById('selectionArea');
+        assetsData.forEach(a => {
+            area.innerHTML += `
+                <label class="select-item">
+                    <input type="checkbox" value="${a.id}" checked>
+                    ${a.name} (Min: R$ ${a.min})
+                </label>
+            `;
+        });
+
+        function process() {
+            const total = parseFloat(document.getElementById('totalVal').value);
+            const selectedIds = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => parseInt(cb.value));
+
+            if (!total || selectedIds.length === 0) {
+                alert("Insira um valor e escolha ao menos um ativo!");
+                return;
             }
 
-            const grid = document.getElementById('resultsGrid');
-            grid.innerHTML = '';
-            grid.style.display = 'grid';
+            const amountPerAsset = total / selectedIds.length;
+            let totalActuallyInvested = 0;
+            let totalLeft = 0;
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            resultsDiv.style.display = 'grid';
 
-            const valuePerCategory = val / 5;
-
-            categories.forEach(cat => {
-                const card = document.createElement('div');
-                card.className = 'category-card';
+            selectedIds.forEach(id => {
+                const asset = assetsData.find(a => a.id === id);
+                const canInvest = amountPerAsset >= asset.min;
                 
-                // Divisão inicial (4% do total ou 20% da categoria)
-                const initialShare = valuePerCategory / 5;
-                
-                // Filtra quem é acessível e quem não é
-                let affordable = cat.assets.filter(a => initialShare >= a.min);
-                let expensive = cat.assets.filter(a => initialShare < a.min);
-
-                let finalItems = [];
-                
-                if (affordable.length > 0) {
-                    // Redistribui o valor total da categoria entre os que dá para comprar
-                    const adjustedValue = valuePerCategory / affordable.length;
-                    
-                    affordable.forEach(a => {
-                        finalItems.push({ ...a, amount: adjustedValue, canBuy: true });
-                    });
-                    expensive.forEach(a => {
-                        finalItems.push({ ...a, amount: 0, canBuy: false });
-                    });
+                let valColor, msg;
+                if (canInvest) {
+                    totalActuallyInvested += amountPerAsset;
+                    valColor = "var(--accent)";
+                    msg = `✅ Sucesso! Comprando aprox. ${(amountPerAsset/asset.min).toFixed(2)} unidades.`;
                 } else {
-                    // Nenhum é acessível
-                    cat.assets.forEach(a => {
-                        finalItems.push({ ...a, amount: 0, canBuy: false });
-                    });
+                    totalLeft += amountPerAsset;
+                    valColor = "var(--danger)";
+                    msg = `⚠️ Não foi possível investir. O mínimo é R$ ${asset.min}.`;
                 }
 
-                // Ordem alfabética para manter o layout limpo
-                finalItems.sort((a, b) => a.name.localeCompare(b.name));
-
-                let html = `<h3>${cat.name} <span>R$ ${valuePerCategory.toFixed(2)}</span></h3>`;
-                finalItems.forEach(item => {
-                    const color = item.canBuy ? 'var(--accent)' : 'var(--danger)';
-                    const opacity = item.canBuy ? '1' : '0.5';
-                    const quantity = item.canBuy ? (item.amount / item.min).toFixed(1) : 0;
-
-                    html += `
-                        <div class="investment-item" style="opacity: ${opacity}">
-                            <div class="asset-info">
-                                <span>${item.name}</span>
-                                <span>R$ ${item.amount.toFixed(2)}</span>
+                resultsDiv.innerHTML += `
+                    <div class="card" style="opacity: ${canInvest ? '1' : '0.6'}">
+                        <div class="item">
+                            <strong style="color:var(--white)">${asset.name}</strong><br>
+                            <small>${asset.cat}</small>
+                            <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                                <span>Destinado:</span>
+                                <strong>R$ ${amountPerAsset.toFixed(2)}</strong>
                             </div>
-                            <span class="validation-label" style="color: ${color}">
-                                ${item.canBuy 
-                                    ? `✅ Sugestão: comprar ${quantity} un.` 
-                                    : `⚠️ Mínimo: R$ ${item.min.toFixed(2)} (Valor redistribuído)`}
-                            </span>
+                            <span class="val-msg" style="color:${valColor}">${msg}</span>
                         </div>
-                    `;
-                });
-
-                card.innerHTML = html;
-                grid.appendChild(card);
+                    </div>
+                `;
             });
 
-            // Scroll suave para os resultados
-            setTimeout(() => {
-                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            // Atualizar Resumo
+            const summary = document.getElementById('summary');
+            summary.style.display = 'flex';
+            document.getElementById('sumInvested').innerText = `INVESTIDO: R$ ${totalActuallyInvested.toFixed(2)}`;
+            document.getElementById('sumLeft').innerText = `SALDO QUE SOBROU: R$ ${totalLeft.toFixed(2)}`;
+            
+            window.scrollTo({ top: summary.offsetTop - 100, behavior: 'smooth' });
         }
     </script>
 </body>
