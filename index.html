@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Simulador de Investimentos</title>
+    <title>AliTech | Simulador de Investimentos Profissional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -15,218 +15,304 @@
             --text-gray: #8892b0;
             --danger: #ff4d4d;
             --bg-card: #112240;
+            --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; overflow-x: hidden; }
 
+        /* HEADER */
         header {
-            background: rgba(10, 25, 47, 0.95); padding: 1rem 5%;
+            background: rgba(10, 25, 47, 0.95); padding: 1.2rem 5%;
             display: flex; justify-content: space-between; align-items: center;
             position: fixed; width: 100%; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--secondary); backdrop-filter: blur(10px);
         }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
+        .logo { font-size: 1.6rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
 
-        .hero { padding: 140px 5% 40px; text-align: center; background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%); }
-        .hero h1 { font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        /* PAINEL DE CONTROLE */
-        .control-panel {
-            background: var(--bg-card); padding: 30px; border-radius: 12px;
-            border: 1px solid var(--secondary); margin-bottom: 40px; text-align: center;
+        /* HERO SECTION */
+        .hero {
+            padding: 160px 5% 60px; text-align: center;
+            background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%);
         }
-        input[type="number"] {
-            padding: 15px; width: 280px; border-radius: 5px; border: 1px solid var(--secondary);
-            background: var(--primary); color: #fff; font-size: 1.2rem; outline: none;
-        }
-        .btn-calc {
-            background: var(--accent); color: var(--primary); padding: 15px 30px;
-            border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-calc:hover { transform: scale(1.05); }
+        .hero h1 { font-size: 3rem; color: #fff; margin-bottom: 15px; }
+        .hero p { font-size: 1.2rem; color: var(--text-gray); max-width: 800px; margin: 0 auto 30px; }
 
-        /* RESUMO DE SOBRA */
-        .residual-box {
-            background: var(--danger); color: #fff; padding: 15px;
-            border-radius: 8px; margin-bottom: 25px; display: none; font-weight: bold;
+        /* SIMULADOR FORM */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .setup-card {
+            background: var(--bg-card); padding: 40px; border-radius: 15px;
+            border: 1px solid var(--secondary); margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-
-        /* GRID DE CATEGORIAS */
-        .categories-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .cat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border-top: 4px solid var(--accent); }
-        .cat-card h3 { color: var(--gold); margin-bottom: 15px; border-bottom: 1px solid #233554; padding-bottom: 10px; }
-
-        .asset-item {
-            display: flex; align-items: flex-start; gap: 10px; padding: 12px 0;
-            border-bottom: 1px solid #1d2d47;
+        .form-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px; margin-bottom: 30px;
         }
-        .asset-item:last-child { border: none; }
-        .asset-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+        .input-group { display: flex; flex-direction: column; text-align: left; }
+        .input-group label { margin-bottom: 8px; font-weight: 600; color: var(--accent); font-size: 0.9rem; }
         
-        .asset-details { flex-grow: 1; }
+        input, select {
+            padding: 14px; border-radius: 8px; border: 1px solid var(--secondary);
+            background: var(--primary); color: #fff; font-size: 1rem; outline: none;
+            transition: 0.3s;
+        }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(100, 255, 218, 0.2); }
+
+        .btn-main {
+            background: var(--accent); color: var(--primary); padding: 18px 40px;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 1.1rem; transition: 0.3s; width: 100%; text-transform: uppercase;
+        }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3); }
+
+        /* RESULTADOS */
+        #resultsArea { display: none; margin-top: 40px; }
+        .summary-banner {
+            background: var(--accent); color: var(--primary); padding: 25px;
+            border-radius: 12px; display: flex; justify-content: space-around;
+            flex-wrap: wrap; margin-bottom: 30px; font-weight: bold; text-align: center;
+        }
+        .summary-item span { display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.8; }
+        .summary-item strong { font-size: 1.5rem; }
+
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .cat-card {
+            background: var(--bg-card); border-radius: 12px; padding: 25px;
+            border-top: 5px solid var(--accent); position: relative;
+        }
+        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cat-header h3 { color: var(--gold); }
+        .cat-percent { font-size: 0.8rem; background: var(--secondary); padding: 4px 10px; border-radius: 20px; }
+
+        .asset-row {
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .asset-row:last-child { border: none; }
+        .asset-info { display: flex; flex-direction: column; }
         .asset-name { font-weight: bold; font-size: 0.95rem; }
-        .asset-price { font-size: 0.8rem; color: var(--text-gray); display: block; }
-        .asset-allocation { color: var(--accent); font-weight: bold; display: block; margin-top: 5px; }
+        .asset-min { font-size: 0.7rem; color: var(--text-gray); }
+        .asset-value { color: var(--accent); font-weight: 700; }
         
-        .msg-error { color: var(--danger); font-size: 0.75rem; font-weight: bold; }
+        .error-tag { color: var(--danger); font-size: 0.7rem; font-weight: bold; margin-top: 2px; }
 
-        footer { padding: 60px 5%; text-align: center; font-size: 0.8rem; color: var(--text-gray); border-top: 1px solid var(--secondary); }
+        /* FOOTER */
+        footer { padding: 60px 5%; text-align: center; border-top: 1px solid var(--secondary); margin-top: 80px; }
+        .legal { font-size: 0.75rem; color: var(--text-gray); max-width: 800px; margin: 20px auto; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .summary-banner { gap: 20px; }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">AliTech</div>
+        <nav style="font-weight: bold; color: var(--accent); font-size: 0.8rem;">SISTEMA DE ALOCAÇÃO PATRIMONIAL</nav>
     </header>
 
     <section class="hero">
-        <h1>Simulador de Carteira AliTech</h1>
-        <p>Selecione os ativos, defina o valor e veja a mágica da diversificação.</p>
+        <h1>Simulador de Investimentos AliTech</h1>
+        <p>Descubra a alocação ideal para o seu perfil. Nossa tecnologia distribui seu capital entre as melhores classes de ativos do mercado financeiro de forma automática.</p>
     </section>
 
     <div class="container">
-        <div class="control-panel">
-            <h3>Quanto deseja investir?</h3>
-            <div style="margin: 20px 0;">
-                <input type="number" id="totalInput" placeholder="Valor em R$" min="1">
-                <button class="btn-calc" onclick="simular()">CALCULAR INVESTIMENTOS</button>
+        <div class="setup-card">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>VALOR TOTAL PARA INVESTIR (R$)</label>
+                    <input type="number" id="mainValue" placeholder="Ex: 50000" min="100">
+                </div>
+                <div class="input-group">
+                    <label>PERFIL DO INVESTIDOR</label>
+                    <select id="userProfile">
+                        <option value="conservador">Conservador</option>
+                        <option value="moderado" selected>Moderado</option>
+                        <option value="arrojado">Arrojado</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>HORIZONTE DE TEMPO</label>
+                    <select id="timeHorizon">
+                        <option value="curto">Curto Prazo (até 1 ano)</option>
+                        <option value="medio">Médio Prazo (1 a 5 anos)</option>
+                        <option value="longo">Longo Prazo (5 anos +)</option>
+                    </select>
+                </div>
             </div>
+            <button class="btn-main" onclick="runSimulation()">Gerar Carteira Personalizada</button>
         </div>
 
-        <div id="residualAlert" class="residual-box"></div>
-
-        <div id="gridResult" class="categories-container">
+        <div id="resultsArea">
+            <div class="summary-banner">
+                <div class="summary-item">
+                    <span>Capital Simulado</span>
+                    <strong id="labelTotal">R$ 0,00</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Perfil Analisado</span>
+                    <strong id="labelProfile">-</strong>
+                </div>
+                <div class="summary-item">
+                    <span>Saldo Residual</span>
+                    <strong id="labelResidual" style="color: #6e0000;">R$ 0,00</strong>
+                </div>
             </div>
+
+            <div id="categoriesContainer" class="categories-grid">
+                </div>
+
+            <div style="margin-top: 50px; background: var(--secondary); padding: 30px; border-radius: 12px; text-align: center;">
+                <h3>Próximo Passo</h3>
+                <p style="margin: 15px 0;">Sua carteira foi diversificada em 25 ativos para mitigar riscos.</p>
+                <button class="btn-main" style="width: auto;" onclick="window.print()">Exportar PDF da Carteira</button>
+            </div>
+        </div>
     </div>
 
     <footer>
-        © 2025 AliTech - Educativo. O saldo residual ocorre quando o valor destinado a um ativo é inferior ao seu preço mínimo de compra.
+        <p>&copy; 2025 AliTech Solutions Digital. Todos os direitos reservados.</p>
+        <div class="legal">
+            Aviso Legal: Este simulador tem caráter exclusivamente educativo. Os cálculos baseiam-se em estimativas de mercado e preços mínimos sugeridos. Esta ferramenta não constitui recomendação de compra, venda ou consultoria financeira profissional.
+        </div>
     </footer>
 
     <script>
-        const data = [
+        const investmentData = [
             {
                 category: "Renda Fixa",
+                desc: "Segurança e previsibilidade.",
                 assets: [
                     { name: "Tesouro Selic", min: 35 },
-                    { name: "Tesouro IPCA+", min: 35 },
-                    { name: "CDB Liquidez", min: 1 }
+                    { name: "Tesouro IPCA+", min: 40 },
+                    { name: "CDB 110% CDI", min: 1 },
+                    { name: "LCI Isenta", min: 50 },
+                    { name: "Debênture Incentivada", min: 100 }
                 ]
             },
             {
                 category: "Renda Variável",
+                desc: "Potencial de dividendos e valorização.",
                 assets: [
-                    { name: "Ações Dividendos", min: 20 },
-                    { name: "Ações Growth", min: 45 },
-                    { name: "BDRs Globais", min: 15 }
+                    { name: "Ações Blue Chips", min: 20 },
+                    { name: "Ações de Dividendos", min: 15 },
+                    { name: "Small Caps", min: 10 },
+                    { name: "ETFs (BOVA11)", min: 100 },
+                    { name: "BDRs Globais", min: 10 }
                 ]
             },
             {
                 category: "Fundos Imobiliários",
+                desc: "Renda mensal vinda de aluguéis.",
                 assets: [
                     { name: "FII Logística", min: 10 },
-                    { name: "FII Shoppings", min: 10 },
-                    { name: "FII Papel", min: 10 }
+                    { name: "FII Shoppings", min: 100 },
+                    { name: "FII Papel (Dívida)", min: 10 },
+                    { name: "FII Híbrido", min: 100 },
+                    { name: "FII Escritórios", min: 10 }
                 ]
             },
             {
-                category: "Criptoativos",
+                category: "Fundos de Investimento",
+                desc: "Gestão profissional diversificada.",
                 assets: [
-                    { name: "Bitcoin", min: 1 },
-                    { name: "Ethereum", min: 1 },
-                    { name: "Solana", min: 10 }
+                    { name: "Fundo Multimercado", min: 100 },
+                    { name: "Fundo Ações", min: 100 },
+                    { name: "Fundo Cambial", min: 50 },
+                    { name: "Fundo Renda Fixa LP", min: 1 },
+                    { name: "Fundo Internacional", min: 100 }
+                ]
+            },
+            {
+                category: "Criptomoedas",
+                desc: "Alta volatilidade e tecnologia.",
+                assets: [
+                    { name: "Bitcoin (BTC)", min: 1 },
+                    { name: "Ethereum (ETH)", min: 1 },
+                    { name: "Solana (SOL)", min: 10 },
+                    { name: "Binance Coin (BNB)", min: 10 },
+                    { name: "Polygon (MATIC)", min: 1 }
                 ]
             }
         ];
 
-        // Renderiza a interface inicial
-        function renderInterface() {
-            const grid = document.getElementById('gridResult');
-            data.forEach((cat, catIdx) => {
-                let assetsHtml = cat.assets.map((asset, assetIdx) => `
-                    <div class="asset-item">
-                        <input type="checkbox" id="check-${catIdx}-${assetIdx}" checked>
-                        <div class="asset-details">
-                            <span class="asset-name">${asset.name}</span>
-                            <span class="asset-price">Preço mín: R$ ${asset.min}</span>
-                            <span id="alloc-${catIdx}-${assetIdx}" class="asset-allocation"></span>
-                            <span id="error-${catIdx}-${assetIdx}" class="msg-error"></span>
-                        </div>
-                    </div>
-                `).join('');
+        // Pesos por perfil (Renda Fixa, Variável, FIIs, Fundos, Cripto)
+        const profileWeights = {
+            conservador: [0.60, 0.10, 0.15, 0.10, 0.05],
+            moderado: [0.40, 0.20, 0.20, 0.10, 0.10],
+            arrojado: [0.15, 0.35, 0.20, 0.15, 0.15]
+        };
 
-                grid.innerHTML += `
+        function formatBRL(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function runSimulation() {
+            const rawValue = parseFloat(document.getElementById('mainValue').value);
+            const profile = document.getElementById('userProfile').value;
+            
+            if (!rawValue || rawValue < 100) {
+                alert("Por favor, insira um valor mínimo de R$ 100,00");
+                return;
+            }
+
+            const weights = profileWeights[profile];
+            let totalResidual = 0;
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+
+            investmentData.forEach((cat, index) => {
+                const categoryWeight = weights[index];
+                const categoryBudget = rawValue * categoryWeight;
+                const assetBudget = categoryBudget / 5; // Divide igualmente entre os 5 ativos da categoria
+
+                let assetsHtml = '';
+                cat.assets.forEach(asset => {
+                    const canAfford = assetBudget >= asset.min;
+                    let finalValue = 0;
+
+                    if (canAfford) {
+                        finalValue = assetBudget;
+                    } else {
+                        totalResidual += assetBudget;
+                    }
+
+                    assetsHtml += `
+                        <div class="asset-row" style="opacity: ${canAfford ? '1' : '0.4'}">
+                            <div class="asset-info">
+                                <span class="asset-name">${asset.name}</span>
+                                <span class="asset-min">Piso: ${formatBRL(asset.min)}</span>
+                                ${!canAfford ? '<span class="error-tag">VALOR ABAIXO DO MÍNIMO</span>' : ''}
+                            </div>
+                            <span class="asset-value">${formatBRL(finalValue)}</span>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
                     <div class="cat-card">
-                        <h3>${cat.category}</h3>
-                        ${assetsHtml}
+                        <div class="cat-header">
+                            <h3>${cat.category}</h3>
+                            <span class="cat-percent">${categoryWeight * 100}%</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-gray); margin-bottom: 15px;">${cat.desc}</p>
+                        <div class="asset-list">${assetsHtml}</div>
                     </div>
                 `;
             });
-        }
 
-        function simular() {
-            // Arredonda o valor para baixo para evitar decimais complexos no cálculo inicial
-            let total = Math.floor(parseFloat(document.getElementById('totalInput').value));
+            // Atualiza Banner Superior
+            document.getElementById('labelTotal').innerText = formatBRL(rawValue);
+            document.getElementById('labelProfile').innerText = profile.toUpperCase();
+            document.getElementById('labelResidual').innerText = formatBRL(totalResidual);
             
-            if (!total || total <= 0) {
-                alert("Por favor, insira um valor inteiro válido.");
-                return;
-            }
-
-            // Conta quantos ativos foram selecionados
-            let selectedCount = 0;
-            data.forEach((cat, cIdx) => {
-                cat.assets.forEach((asset, aIdx) => {
-                    if (document.getElementById(`check-${cIdx}-${aIdx}`).checked) selectedCount++;
-                });
-            });
-
-            if (selectedCount === 0) {
-                alert("Selecione pelo menos um investimento.");
-                return;
-            }
-
-            // Divisão exata (inteira) para cada ativo
-            const perAsset = Math.floor(total / selectedCount);
-            let totalSobrou = total % selectedCount; // Resto da divisão matemática
-
-            data.forEach((cat, cIdx) => {
-                cat.assets.forEach((asset, aIdx) => {
-                    const check = document.getElementById(`check-${cIdx}-${aIdx}`);
-                    const allocLabel = document.getElementById(`alloc-${cIdx}-${aIdx}`);
-                    const errorLabel = document.getElementById(`error-${cIdx}-${aIdx}`);
-                    
-                    // Reseta labels
-                    allocLabel.innerText = "";
-                    errorLabel.innerText = "";
-
-                    if (check.checked) {
-                        if (perAsset >= asset.min) {
-                            allocLabel.innerText = `R$ ${perAsset}`;
-                        } else {
-                            // Se não der para investir, o valor desse ativo vai para a sobra
-                            totalSobrou += perAsset;
-                            errorLabel.innerText = "⚠️ VALOR INSUFICIENTE";
-                            allocLabel.innerText = "R$ 0";
-                        }
-                    }
-                });
-            });
-
-            // Mostrar aviso de sobra se houver
-            const residualBox = document.getElementById('residualAlert');
-            if (totalSobrou > 0) {
-                residualBox.style.display = "block";
-                residualBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ATENÇÃO: Sobrou R$ ${totalSobrou} que não pôde ser alocado por falta de valor mínimo ou arredondamento.`;
-            } else {
-                residualBox.style.display = "none";
-            }
+            // Exibe Resultados
+            document.getElementById('resultsArea').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('resultsArea').offsetTop - 100, behavior: 'smooth' });
         }
-
-        renderInterface();
     </script>
 </body>
 </html>
