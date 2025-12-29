@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Alocação Total</title>
+    <title>AliTech | Simulador de Investimentos 100%</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -13,144 +13,170 @@
             --gold: #fcc419;
             --bg-card: #112240;
             --text: #ccd6f6;
+            --white: #ffffff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--primary); color: var(--text); }
+        body { background-color: var(--primary); color: var(--text); line-height: 1.6; }
 
         header {
-            background: rgba(10, 25, 47, 0.95); padding: 1rem 5%;
+            background: rgba(10, 25, 47, 0.95); padding: 1.2rem 5%;
             display: flex; justify-content: space-between; align-items: center;
             position: fixed; width: 100%; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--secondary); backdrop-filter: blur(10px);
         }
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
 
-        .hero { padding: 140px 5% 40px; text-align: center; }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .hero { padding: 160px 5% 40px; text-align: center; background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%); }
+        .hero h1 { font-size: 2.8rem; color: var(--white); margin-bottom: 15px; }
+        .hero p { max-width: 700px; margin: 0 auto 30px; color: #8892b0; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         .control-panel {
-            background: var(--bg-card); padding: 30px; border-radius: 12px;
+            background: var(--bg-card); padding: 40px; border-radius: 15px;
             border: 1px solid var(--secondary); margin-bottom: 40px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         input[type="number"] {
-            padding: 15px; width: 300px; border-radius: 5px; border: 1px solid var(--secondary);
-            background: var(--primary); color: #fff; font-size: 1.2rem; outline: none; margin-bottom: 10px;
+            padding: 15px; width: 100%; max-width: 350px; border-radius: 8px; border: 2px solid var(--secondary);
+            background: var(--primary); color: #fff; font-size: 1.2rem; outline: none; margin-bottom: 20px;
+            transition: 0.3s;
         }
+        input[type="number"]:focus { border-color: var(--accent); }
 
         .btn-calc {
-            background: var(--accent); color: var(--primary); padding: 15px 35px;
-            border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
+            background: var(--accent); color: var(--primary); padding: 18px 45px;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 1.1rem; text-transform: uppercase; transition: 0.3s;
         }
+        .btn-calc:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3); }
 
-        /* BARRA DE STATUS 100% */
+        /* RESULTADO TOTAL */
         .summary-bar {
             background: var(--accent); color: var(--primary);
-            padding: 20px; border-radius: 8px; margin-bottom: 30px;
-            display: none; justify-content: space-around; font-weight: 900; font-size: 1.3rem;
-            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.2);
+            padding: 25px; border-radius: 12px; margin-bottom: 30px;
+            display: none; justify-content: center; align-items: center;
+            font-weight: 800; font-size: 1.5rem; gap: 15px;
         }
 
+        /* GRID DE RESULTADOS */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .card { background: var(--bg-card); padding: 25px; border-radius: 10px; border-left: 5px solid var(--accent); }
-        .card h3 { color: var(--gold); margin-bottom: 15px; border-bottom: 1px solid #233554; padding-bottom: 10px; }
+        .card { 
+            background: var(--bg-card); padding: 25px; border-radius: 12px; 
+            border-top: 4px solid var(--accent); transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { color: var(--gold); margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
 
-        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1d2d47; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .item:last-child { border: none; }
-        .val { color: var(--accent); font-weight: bold; }
-        .status-tag { font-size: 0.7rem; display: block; margin-top: 3px; }
+        .asset-name { font-weight: 600; font-size: 0.95rem; }
+        .asset-val { color: var(--accent); font-weight: bold; font-family: monospace; font-size: 1.1rem; }
+        
+        .error-text { color: var(--gold); font-size: 0.75rem; margin-top: 4px; display: block; font-weight: normal; }
 
-        footer { padding: 40px; text-align: center; font-size: 0.8rem; opacity: 0.6; }
+        footer { padding: 60px 5%; text-align: center; font-size: 0.85rem; color: #8892b0; border-top: 1px solid var(--secondary); margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <header><div class="logo">AliTech</div></header>
+    <header>
+        <div class="logo">AliTech</div>
+    </header>
 
     <section class="hero">
-        <h1>Simulador 100% Alocado</h1>
-        <p>Ajuste dinâmico de capital: o total investido será exatamente o valor do seu aporte.</p>
+        <h1>Simulador de Alocação Real</h1>
+        <p>Utilize nossa tecnologia para distribuir seu capital de forma exata. Garantimos 100% de aproveitamento do valor inserido, redistribuindo resíduos automaticamente.</p>
     </section>
 
     <div class="container">
         <div class="control-panel">
-            <input type="number" id="inputValue" placeholder="Valor Total (R$)" min="10">
-            <button class="btn-calc" onclick="simular()">GERAR CARTEIRA</button>
+            <h2 style="margin-bottom: 20px; font-size: 1.2rem; color: var(--accent);">QUANTO DESEJA INVESTIR?</h2>
+            <input type="number" id="inputValue" placeholder="Ex: 5000.00" step="0.01">
+            <br>
+            <button class="btn-calc" onclick="simular()">Simular Agora</button>
         </div>
 
         <div id="summary" class="summary-bar">
+            <i class="fas fa-check-circle"></i>
             <span>TOTAL INVESTIDO: <span id="totalLabel">R$ 0,00</span></span>
         </div>
 
         <div id="results" class="grid"></div>
     </div>
 
-    <footer>© 2025 AliTech - Simulador Financeiro Educativo</footer>
+    <footer>
+        <p>&copy; 2025 AliTech. Este simulador é uma ferramenta educativa e não constitui recomendação de investimento.</p>
+    </footer>
 
     <script>
         const categories = [
-            { name: "Renda Fixa", assets: [{n: "Tesouro Selic", m: 35}, {n: "CDB 110% CDI", m: 1}, {n: "LCI", m: 50}] },
-            { name: "Ações", assets: [{n: "Blue Chips", m: 20}, {n: "Dividendos", m: 15}, {n: "Small Caps", m: 10}] },
-            { name: "FIIs", assets: [{n: "Logística", m: 10}, {n: "Shoppings", m: 100}, {n: "Papel", m: 10}] },
-            { name: "Cripto", assets: [{n: "Bitcoin", m: 1}, {n: "Ethereum", m: 1}, {n: "Solana", m: 10}] }
+            { name: "Renda Fixa", assets: [{n: "Tesouro Selic", m: 35}, {n: "Tesouro IPCA+", m: 40}, {n: "CDB Liquidez", m: 1}, {n: "LCI Isenta", m: 50}, {n: "LCA Isenta", m: 50}] },
+            { name: "Ações", assets: [{n: "Blue Chips", m: 20}, {n: "Dividendos", m: 15}, {n: "Small Caps", m: 10}, {n: "ETFs Índice", m: 100}, {n: "BDRs Globais", m: 10}] },
+            { name: "Fundos Imobiliários", assets: [{n: "FII Logística", m: 10}, {n: "FII Shoppings", m: 100}, {n: "FII Papel", m: 10}, {n: "FII Galpões", m: 50}, {n: "FII Escritórios", m: 100}] },
+            { name: "Criptoativos", assets: [{n: "Bitcoin (BTC)", m: 1}, {n: "Ethereum (ETH)", m: 1}, {n: "Solana (SOL)", m: 10}, {n: "Cardano (ADA)", m: 1}, {n: "Polkadot (DOT)", m: 5}] }
         ];
 
-        function format(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+        function format(v) { 
+            return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); 
+        }
 
         function simular() {
             const inputVal = parseFloat(document.getElementById('inputValue').value);
-            if (!inputVal || inputVal <= 0) return alert("Insira um valor.");
+            
+            if (!inputVal || inputVal <= 0) {
+                alert("Por favor, insira um valor válido para investir.");
+                return;
+            }
 
             const resultsGrid = document.getElementById('results');
             resultsGrid.innerHTML = '';
 
-            // 1. Identificar ativos que podem ser comprados com o valor TOTAL
-            let ativosPossiveis = [];
+            // 1. Filtrar globalmente todos os ativos cujo preço mínimo é menor ou igual ao capital total
+            let ativosAcessiveis = [];
             categories.forEach(cat => {
                 cat.assets.forEach(as => {
-                    if (inputVal >= as.m) ativosPossiveis.push(as);
+                    if (inputVal >= as.m) ativosAcessiveis.push(as);
                 });
             });
 
-            if (ativosPossiveis.length === 0) {
-                alert("Valor insuficiente para os mínimos de mercado.");
+            if (ativosAcessiveis.length === 0) {
+                alert("O valor inserido é insuficiente para os mínimos de entrada dos ativos disponíveis.");
                 return;
             }
 
-            // 2. Cálculo da fatia por ativo
-            // Usamos Math.floor para evitar dízimas e depois ajustamos a diferença no último ativo
-            let valorBase = Math.floor((inputVal / ativosPossiveis.length) * 100) / 100;
-            let totalDistribuido = 0;
+            // 2. Divisão matemática precisa
+            // Calculamos o valor base arredondando para baixo em 2 casas decimais
+            let valorBasePorAtivo = Math.floor((inputVal / ativosAcessiveis.length) * 100) / 100;
+            let totalAcumulado = 0;
 
+            // 3. Renderização com Ajuste de Centavos no Último Ativo
             categories.forEach(cat => {
                 let htmlAtivos = '';
-                let somaCat = 0;
+                let somaCategoria = 0;
 
                 cat.assets.forEach(as => {
-                    const isOk = ativosPossiveis.includes(as);
-                    let valorAlocado = isOk ? valorBase : 0;
-                    
-                    // Se for o último ativo da lista global, compensa a diferença de centavos
-                    if (isOk && (totalDistribuido + valorAlocado).toFixed(2) != inputVal.toFixed(2)) {
-                        if (as === ativosPossiveis[ativosPossiveis.length - 1]) {
-                           valorAlocado = inputVal - totalDistribuido;
-                        }
+                    const isAcessivel = ativosAcessiveis.includes(as);
+                    let valorFinal = isAcessivel ? valorBasePorAtivo : 0;
+
+                    // Lógica de fechamento de 100%: 
+                    // Se for o último ativo da lista de acessíveis, ele recebe o saldo restante exato.
+                    if (isAcessivel && as === ativosAcessiveis[ativosAcessiveis.length - 1]) {
+                        valorFinal = Number((inputVal - totalAcumulado).toFixed(2));
                     }
 
-                    totalDistribuido += valorAlocado;
-                    somaCat += valorAlocado;
+                    if (isAcessivel) totalAcumulado += valorFinal;
+                    somaCategoria += valorFinal;
 
                     htmlAtivos += `
-                        <div class="item" style="opacity: ${isOk ? '1' : '0.4'}">
-                            <div>
-                                <strong>${as.n}</strong>
-                                <span class="status-tag" style="color:${isOk ? 'var(--accent)' : 'var(--danger)'}">
-                                    ${isOk ? 'ATIVO INCLUSO' : 'VALOR ABAIXO DO MÍNIMO'}
-                                </span>
+                        <div class="item" style="opacity: ${isAcessivel ? '1' : '0.4'}">
+                            <div class="asset-info">
+                                <span class="asset-name">${as.n}</span>
+                                ${!isAcessivel ? `<span class="error-text">Mínimo: ${format(as.m)}</span>` : ''}
                             </div>
-                            <span class="val">${format(valorAlocado)}</span>
+                            <span class="asset-val">${format(valorFinal)}</span>
                         </div>
                     `;
                 });
@@ -158,19 +184,22 @@
                 resultsGrid.innerHTML += `
                     <div class="card">
                         <h3>${cat.name}</h3>
-                        ${htmlAtivos}
-                        <div style="margin-top:10px; text-align:right; font-size:0.8rem; color:var(--gold)">
-                            Subtotal: ${format(somaCat)}
+                        <div class="asset-list">${htmlAtivos}</div>
+                        <div style="margin-top: 15px; text-align: right; font-weight: bold; color: var(--gold); font-size: 0.9rem;">
+                            Subtotal: ${format(somaCategoria)}
                         </div>
                     </div>
                 `;
             });
 
-            // 3. Exibir Resumo Final
+            // 4. Atualizar Barra de Resumo (O valor será idêntico ao input)
             document.getElementById('summary').style.display = 'flex';
             document.getElementById('totalLabel').innerText = format(inputVal);
-            
-            window.scrollTo({ top: document.getElementById('summary').offsetTop - 100, behavior: 'smooth' });
+
+            // Scroll suave para o resultado
+            setTimeout(() => {
+                document.getElementById('summary').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         }
     </script>
 </body>
