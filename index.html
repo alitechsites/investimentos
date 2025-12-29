@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Simulador de Investimentos Profissional</title>
+    <title>AliTech | Alocação Inteligente Total</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -15,303 +15,186 @@
             --text-gray: #8892b0;
             --danger: #ff4d4d;
             --bg-card: #112240;
-            --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; }
 
-        /* HEADER */
         header {
-            background: rgba(10, 25, 47, 0.95); padding: 1.2rem 5%;
+            background: rgba(10, 25, 47, 0.95); padding: 1rem 5%;
             display: flex; justify-content: space-between; align-items: center;
             position: fixed; width: 100%; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--secondary); backdrop-filter: blur(10px);
         }
-        .logo { font-size: 1.6rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
 
-        /* HERO SECTION */
-        .hero {
-            padding: 160px 5% 60px; text-align: center;
-            background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 100%);
-        }
-        .hero h1 { font-size: 3rem; color: #fff; margin-bottom: 15px; }
-        .hero p { font-size: 1.2rem; color: var(--text-gray); max-width: 800px; margin: 0 auto 30px; }
+        .hero { padding: 140px 5% 40px; text-align: center; }
+        .hero h1 { font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
 
-        /* SIMULADOR FORM */
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-        .setup-card {
-            background: var(--bg-card); padding: 40px; border-radius: 15px;
-            border: 1px solid var(--secondary); margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .control-panel {
+            background: var(--bg-card); padding: 30px; border-radius: 12px;
+            border: 1px solid var(--secondary); margin-bottom: 40px; text-align: center;
         }
-        .form-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px; margin-bottom: 30px;
+        input[type="number"] {
+            padding: 15px; width: 280px; border-radius: 5px; border: 1px solid var(--secondary);
+            background: var(--primary); color: #fff; font-size: 1.2rem; outline: none; margin-bottom: 10px;
         }
-        .input-group { display: flex; flex-direction: column; text-align: left; }
-        .input-group label { margin-bottom: 8px; font-weight: 600; color: var(--accent); font-size: 0.9rem; }
+        select { padding: 15px; background: var(--primary); color: #fff; border-radius: 5px; border: 1px solid var(--secondary); margin-right: 10px; }
         
-        input, select {
-            padding: 14px; border-radius: 8px; border: 1px solid var(--secondary);
-            background: var(--primary); color: #fff; font-size: 1rem; outline: none;
-            transition: 0.3s;
+        .btn-calc {
+            background: var(--accent); color: var(--primary); padding: 15px 30px;
+            border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
-        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(100, 255, 218, 0.2); }
 
-        .btn-main {
-            background: var(--accent); color: var(--primary); padding: 18px 40px;
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
-            font-size: 1.1rem; transition: 0.3s; width: 100%; text-transform: uppercase;
+        /* STATUS BAR */
+        .status-bar {
+            display: flex; justify-content: space-around; background: var(--secondary);
+            padding: 20px; border-radius: 8px; margin-bottom: 30px; border-bottom: 3px solid var(--accent);
         }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3); }
+        .status-item span { display: block; font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; }
+        .status-item strong { font-size: 1.2rem; color: var(--white); }
 
-        /* RESULTADOS */
-        #resultsArea { display: none; margin-top: 40px; }
-        .summary-banner {
-            background: var(--accent); color: var(--primary); padding: 25px;
-            border-radius: 12px; display: flex; justify-content: space-around;
-            flex-wrap: wrap; margin-bottom: 30px; font-weight: bold; text-align: center;
-        }
-        .summary-item span { display: block; font-size: 0.8rem; text-transform: uppercase; opacity: 0.8; }
-        .summary-item strong { font-size: 1.5rem; }
-
-        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .cat-card {
-            background: var(--bg-card); border-radius: 12px; padding: 25px;
-            border-top: 5px solid var(--accent); position: relative;
-        }
-        .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .cat-header h3 { color: var(--gold); }
-        .cat-percent { font-size: 0.8rem; background: var(--secondary); padding: 4px 10px; border-radius: 20px; }
-
-        .asset-row {
-            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .asset-row:last-child { border: none; }
-        .asset-info { display: flex; flex-direction: column; }
-        .asset-name { font-weight: bold; font-size: 0.95rem; }
-        .asset-min { font-size: 0.7rem; color: var(--text-gray); }
-        .asset-value { color: var(--accent); font-weight: 700; }
+        /* GRID */
+        .categories-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .cat-card { background: var(--bg-card); padding: 25px; border-radius: 10px; border-top: 4px solid var(--accent); }
+        .cat-card h3 { color: var(--gold); margin-bottom: 20px; font-size: 1.1rem; display: flex; justify-content: space-between; }
         
-        .error-tag { color: var(--danger); font-size: 0.7rem; font-weight: bold; margin-top: 2px; }
-
-        /* FOOTER */
-        footer { padding: 60px 5%; text-align: center; border-top: 1px solid var(--secondary); margin-top: 80px; }
-        .legal { font-size: 0.75rem; color: var(--text-gray); max-width: 800px; margin: 20px auto; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .summary-banner { gap: 20px; }
-        }
+        .asset-item { padding: 12px 0; border-bottom: 1px solid #1d2d47; }
+        .asset-header { display: flex; justify-content: space-between; font-weight: bold; }
+        .asset-sub { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-gray); margin-top: 4px; }
+        .redistributed-tag { color: var(--accent); font-size: 0.7rem; font-weight: bold; }
+        
+        footer { padding: 40px; text-align: center; font-size: 0.8rem; color: var(--text-gray); border-top: 1px solid var(--secondary); }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">AliTech</div>
-        <nav style="font-weight: bold; color: var(--accent); font-size: 0.8rem;">SISTEMA DE ALOCAÇÃO PATRIMONIAL</nav>
     </header>
 
     <section class="hero">
-        <h1>Simulador de Investimentos AliTech</h1>
-        <p>Descubra a alocação ideal para o seu perfil. Nossa tecnologia distribui seu capital entre as melhores classes de ativos do mercado financeiro de forma automática.</p>
+        <h1>Simulador Pro AliTech</h1>
+        <p>Alocação 100% eficiente: resíduos são automaticamente redistribuídos para maximizar seu aporte.</p>
     </section>
 
     <div class="container">
-        <div class="setup-card">
-            <div class="form-grid">
-                <div class="input-group">
-                    <label>VALOR TOTAL PARA INVESTIR (R$)</label>
-                    <input type="number" id="mainValue" placeholder="Ex: 50000" min="100">
-                </div>
-                <div class="input-group">
-                    <label>PERFIL DO INVESTIDOR</label>
-                    <select id="userProfile">
-                        <option value="conservador">Conservador</option>
-                        <option value="moderado" selected>Moderado</option>
-                        <option value="arrojado">Arrojado</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>HORIZONTE DE TEMPO</label>
-                    <select id="timeHorizon">
-                        <option value="curto">Curto Prazo (até 1 ano)</option>
-                        <option value="medio">Médio Prazo (1 a 5 anos)</option>
-                        <option value="longo">Longo Prazo (5 anos +)</option>
-                    </select>
-                </div>
-            </div>
-            <button class="btn-main" onclick="runSimulation()">Gerar Carteira Personalizada</button>
+        <div class="control-panel">
+            <select id="profile">
+                <option value="conservador">Conservador</option>
+                <option value="moderado" selected>Moderado</option>
+                <option value="arrojado">Arrojado</option>
+            </select>
+            <input type="number" id="totalInput" placeholder="Valor Total R$" min="10">
+            <button class="btn-calc" onclick="simular()">GERAR CARTEIRA</button>
         </div>
 
-        <div id="resultsArea">
-            <div class="summary-banner">
-                <div class="summary-item">
-                    <span>Capital Simulado</span>
-                    <strong id="labelTotal">R$ 0,00</strong>
-                </div>
-                <div class="summary-item">
-                    <span>Perfil Analisado</span>
-                    <strong id="labelProfile">-</strong>
-                </div>
-                <div class="summary-item">
-                    <span>Saldo Residual</span>
-                    <strong id="labelResidual" style="color: #6e0000;">R$ 0,00</strong>
-                </div>
-            </div>
-
-            <div id="categoriesContainer" class="categories-grid">
-                </div>
-
-            <div style="margin-top: 50px; background: var(--secondary); padding: 30px; border-radius: 12px; text-align: center;">
-                <h3>Próximo Passo</h3>
-                <p style="margin: 15px 0;">Sua carteira foi diversificada em 25 ativos para mitigar riscos.</p>
-                <button class="btn-main" style="width: auto;" onclick="window.print()">Exportar PDF da Carteira</button>
-            </div>
+        <div id="statusArea" class="status-bar" style="display: none;">
+            <div class="status-item"><span>Total Alocado</span><strong id="statInvested">R$ 0</strong></div>
+            <div class="status-item"><span>Resíduo Inviável</span><strong id="statLeft" style="color: var(--danger);">R$ 0</strong></div>
         </div>
+
+        <div id="gridResult" class="categories-container"></div>
     </div>
 
     <footer>
-        <p>&copy; 2025 AliTech Solutions Digital. Todos os direitos reservados.</p>
-        <div class="legal">
-            Aviso Legal: Este simulador tem caráter exclusivamente educativo. Os cálculos baseiam-se em estimativas de mercado e preços mínimos sugeridos. Esta ferramenta não constitui recomendação de compra, venda ou consultoria financeira profissional.
-        </div>
+        © 2025 AliTech - Este simulador redistribui capital de ativos inacessíveis para os demais itens da categoria.
     </footer>
 
     <script>
-        const investmentData = [
-            {
-                category: "Renda Fixa",
-                desc: "Segurança e previsibilidade.",
-                assets: [
-                    { name: "Tesouro Selic", min: 35 },
-                    { name: "Tesouro IPCA+", min: 40 },
-                    { name: "CDB 110% CDI", min: 1 },
-                    { name: "LCI Isenta", min: 50 },
-                    { name: "Debênture Incentivada", min: 100 }
-                ]
+        const config = [
+            { 
+                category: "Renda Fixa", 
+                weights: { conservador: 0.6, moderado: 0.4, arrojado: 0.2 },
+                assets: [{name: "Tesouro Selic", min: 35}, {name: "Tesouro IPCA+", min: 40}, {name: "CDB 110%", min: 1}, {name: "LCI", min: 50}, {name: "LCA", min: 50}]
             },
-            {
-                category: "Renda Variável",
-                desc: "Potencial de dividendos e valorização.",
-                assets: [
-                    { name: "Ações Blue Chips", min: 20 },
-                    { name: "Ações de Dividendos", min: 15 },
-                    { name: "Small Caps", min: 10 },
-                    { name: "ETFs (BOVA11)", min: 100 },
-                    { name: "BDRs Globais", min: 10 }
-                ]
+            { 
+                category: "Renda Variável", 
+                weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.4 },
+                assets: [{name: "Ações Blue Chips", min: 20}, {name: "Ações Dividendos", min: 15}, {name: "Small Caps", min: 10}, {name: "BDRs", min: 10}, {name: "ETFs", min: 100}]
             },
-            {
-                category: "Fundos Imobiliários",
-                desc: "Renda mensal vinda de aluguéis.",
-                assets: [
-                    { name: "FII Logística", min: 10 },
-                    { name: "FII Shoppings", min: 100 },
-                    { name: "FII Papel (Dívida)", min: 10 },
-                    { name: "FII Híbrido", min: 100 },
-                    { name: "FII Escritórios", min: 10 }
-                ]
+            { 
+                category: "Fundos Imobiliários", 
+                weights: { conservador: 0.2, moderado: 0.2, arrojado: 0.2 },
+                assets: [{name: "FII Galpões", min: 10}, {name: "FII Shoppings", min: 100}, {name: "FII Papel", min: 10}, {name: "FII Tijolo", min: 10}, {name: "FII Híbrido", min: 100}]
             },
-            {
-                category: "Fundos de Investimento",
-                desc: "Gestão profissional diversificada.",
-                assets: [
-                    { name: "Fundo Multimercado", min: 100 },
-                    { name: "Fundo Ações", min: 100 },
-                    { name: "Fundo Cambial", min: 50 },
-                    { name: "Fundo Renda Fixa LP", min: 1 },
-                    { name: "Fundo Internacional", min: 100 }
-                ]
-            },
-            {
-                category: "Criptomoedas",
-                desc: "Alta volatilidade e tecnologia.",
-                assets: [
-                    { name: "Bitcoin (BTC)", min: 1 },
-                    { name: "Ethereum (ETH)", min: 1 },
-                    { name: "Solana (SOL)", min: 10 },
-                    { name: "Binance Coin (BNB)", min: 10 },
-                    { name: "Polygon (MATIC)", min: 1 }
-                ]
+            { 
+                category: "Criptoativos", 
+                weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.2 },
+                assets: [{name: "Bitcoin", min: 1}, {name: "Ethereum", min: 1}, {name: "Solana", min: 10}, {name: "Cardano", min: 1}, {name: "Polkadot", min: 5}]
             }
         ];
 
-        // Pesos por perfil (Renda Fixa, Variável, FIIs, Fundos, Cripto)
-        const profileWeights = {
-            conservador: [0.60, 0.10, 0.15, 0.10, 0.05],
-            moderado: [0.40, 0.20, 0.20, 0.10, 0.10],
-            arrojado: [0.15, 0.35, 0.20, 0.15, 0.15]
-        };
+        function format(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
-        function formatBRL(val) {
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
+        function simular() {
+            let totalPrincipal = Math.floor(parseFloat(document.getElementById('totalInput').value));
+            const perfil = document.getElementById('profile').value;
+            if (!totalPrincipal || totalPrincipal < 1) return alert("Insira um valor válido");
 
-        function runSimulation() {
-            const rawValue = parseFloat(document.getElementById('mainValue').value);
-            const profile = document.getElementById('userProfile').value;
+            const grid = document.getElementById('gridResult');
+            grid.innerHTML = '';
             
-            if (!rawValue || rawValue < 100) {
-                alert("Por favor, insira um valor mínimo de R$ 100,00");
-                return;
-            }
+            let totalGeralInvestido = 0;
+            let capitalParaRedistribuirEntreCategorias = 0;
 
-            const weights = profileWeights[profile];
-            let totalResidual = 0;
-            const container = document.getElementById('categoriesContainer');
-            container.innerHTML = '';
+            // FASE 1: Distribuição por Categoria
+            const resultadosCategorias = config.map(c => {
+                let capitalCategoria = totalPrincipal * c.weights[perfil];
+                let ativosAcessiveis = c.assets.filter(a => capitalCategoria / c.assets.length >= a.min);
+                
+                // Lógica de Redistribuição Interna
+                let distribuicaoFinalAtivos = [];
+                if (ativosAcessiveis.length > 0) {
+                    let valorPorAtivo = capitalCategoria / ativosAcessiveis.length;
+                    
+                    c.assets.forEach(a => {
+                        const podeSubir = valorPorAtivo >= a.min;
+                        distribuicaoFinalAtivos.push({
+                            name: a.name,
+                            min: a.min,
+                            alocado: podeSubir ? valorPorAtivo : 0,
+                            status: podeSubir ? 'ok' : 'falta_valor'
+                        });
+                        if(podeSubir) totalGeralInvestido += valorPorAtivo;
+                    });
+                } else {
+                    // Categoria inteira inacessível
+                    capitalParaRedistribuirEntreCategorias += capitalCategoria;
+                    c.assets.forEach(a => distribuicaoFinalAtivos.push({ name: a.name, min: a.min, alocado: 0, status: 'falta_valor' }));
+                }
 
-            investmentData.forEach((cat, index) => {
-                const categoryWeight = weights[index];
-                const categoryBudget = rawValue * categoryWeight;
-                const assetBudget = categoryBudget / 5; // Divide igualmente entre os 5 ativos da categoria
+                return { name: c.category, assets: distribuicaoFinalAtivos, weight: c.weights[perfil] };
+            });
 
-                let assetsHtml = '';
-                cat.assets.forEach(asset => {
-                    const canAfford = assetBudget >= asset.min;
-                    let finalValue = 0;
-
-                    if (canAfford) {
-                        finalValue = assetBudget;
-                    } else {
-                        totalResidual += assetBudget;
-                    }
-
-                    assetsHtml += `
-                        <div class="asset-row" style="opacity: ${canAfford ? '1' : '0.4'}">
-                            <div class="asset-info">
-                                <span class="asset-name">${asset.name}</span>
-                                <span class="asset-min">Piso: ${formatBRL(asset.min)}</span>
-                                ${!canAfford ? '<span class="error-tag">VALOR ABAIXO DO MÍNIMO</span>' : ''}
-                            </div>
-                            <span class="asset-value">${formatBRL(finalValue)}</span>
+            // FASE 2: Renderização
+            resultadosCategorias.forEach(cat => {
+                let htmlAtivos = cat.assets.map(a => `
+                    <div class="asset-item" style="opacity: ${a.alocado > 0 ? '1' : '0.4'}">
+                        <div class="asset-header">
+                            <span>${a.name}</span>
+                            <span style="color: ${a.alocado > 0 ? 'var(--accent)' : 'var(--danger)'}">${format(a.alocado)}</span>
                         </div>
-                    `;
-                });
+                        <div class="asset-sub">
+                            <span>Mínimo: ${format(a.min)}</span>
+                            ${a.alocado > a.min * 1.5 ? '<span class="redistributed-tag">REFORÇADO</span>' : ''}
+                        </div>
+                    </div>
+                `).join('');
 
-                container.innerHTML += `
+                grid.innerHTML += `
                     <div class="cat-card">
-                        <div class="cat-header">
-                            <h3>${cat.category}</h3>
-                            <span class="cat-percent">${categoryWeight * 100}%</span>
-                        </div>
-                        <p style="font-size: 0.75rem; color: var(--text-gray); margin-bottom: 15px;">${cat.desc}</p>
-                        <div class="asset-list">${assetsHtml}</div>
+                        <h3>${cat.name} <span>${(cat.weight*100).toFixed(0)}%</span></h3>
+                        ${htmlAtivos}
                     </div>
                 `;
             });
 
-            // Atualiza Banner Superior
-            document.getElementById('labelTotal').innerText = formatBRL(rawValue);
-            document.getElementById('labelProfile').innerText = profile.toUpperCase();
-            document.getElementById('labelResidual').innerText = formatBRL(totalResidual);
-            
-            // Exibe Resultados
-            document.getElementById('resultsArea').style.display = 'block';
-            window.scrollTo({ top: document.getElementById('resultsArea').offsetTop - 100, behavior: 'smooth' });
+            document.getElementById('statusArea').style.display = 'flex';
+            document.getElementById('statInvested').innerText = format(totalGeralInvestido);
+            document.getElementById('statLeft').innerText = format(totalPrincipal - totalGeralInvestido);
         }
     </script>
 </body>
