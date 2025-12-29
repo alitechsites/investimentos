@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Alocação Inteligente Total</title>
+    <title>AliTech | Simulador de Precisão</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -18,7 +18,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--primary); color: var(--text-light); line-height: 1.6; }
+        body { background-color: var(--primary); color: var(--text-light); }
 
         header {
             background: rgba(10, 25, 47, 0.95); padding: 1rem 5%;
@@ -48,7 +48,6 @@
             border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
 
-        /* STATUS BAR */
         .status-bar {
             display: flex; justify-content: space-around; background: var(--secondary);
             padding: 20px; border-radius: 8px; margin-bottom: 30px; border-bottom: 3px solid var(--accent);
@@ -56,7 +55,6 @@
         .status-item span { display: block; font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; }
         .status-item strong { font-size: 1.2rem; color: var(--white); }
 
-        /* GRID */
         .categories-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
         .cat-card { background: var(--bg-card); padding: 25px; border-radius: 10px; border-top: 4px solid var(--accent); }
         .cat-card h3 { color: var(--gold); margin-bottom: 20px; font-size: 1.1rem; display: flex; justify-content: space-between; }
@@ -64,7 +62,6 @@
         .asset-item { padding: 12px 0; border-bottom: 1px solid #1d2d47; }
         .asset-header { display: flex; justify-content: space-between; font-weight: bold; }
         .asset-sub { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-gray); margin-top: 4px; }
-        .redistributed-tag { color: var(--accent); font-size: 0.7rem; font-weight: bold; }
         
         footer { padding: 40px; text-align: center; font-size: 0.8rem; color: var(--text-gray); border-top: 1px solid var(--secondary); }
     </style>
@@ -76,8 +73,8 @@
     </header>
 
     <section class="hero">
-        <h1>Simulador Pro AliTech</h1>
-        <p>Alocação 100% eficiente: resíduos são automaticamente redistribuídos para maximizar seu aporte.</p>
+        <h1>Simulador de Carteira AliTech</h1>
+        <p>Distribuição inteligente com trava de segurança para saldo residual negativo.</p>
     </section>
 
     <div class="container">
@@ -87,21 +84,17 @@
                 <option value="moderado" selected>Moderado</option>
                 <option value="arrojado">Arrojado</option>
             </select>
-            <input type="number" id="totalInput" placeholder="Valor Total R$" min="10">
+            <input type="number" id="totalInput" placeholder="Valor Total R$" min="1">
             <button class="btn-calc" onclick="simular()">GERAR CARTEIRA</button>
         </div>
 
         <div id="statusArea" class="status-bar" style="display: none;">
-            <div class="status-item"><span>Total Alocado</span><strong id="statInvested">R$ 0</strong></div>
-            <div class="status-item"><span>Resíduo Inviável</span><strong id="statLeft" style="color: var(--danger);">R$ 0</strong></div>
+            <div class="status-item"><span>Total Investido</span><strong id="statInvested">R$ 0</strong></div>
+            <div class="status-item"><span>Saldo que Sobrou</span><strong id="statLeft" style="color: var(--gold);">R$ 0</strong></div>
         </div>
 
         <div id="gridResult" class="categories-container"></div>
     </div>
-
-    <footer>
-        © 2025 AliTech - Este simulador redistribui capital de ativos inacessíveis para os demais itens da categoria.
-    </footer>
 
     <script>
         const config = [
@@ -113,15 +106,15 @@
             { 
                 category: "Renda Variável", 
                 weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.4 },
-                assets: [{name: "Ações Blue Chips", min: 20}, {name: "Ações Dividendos", min: 15}, {name: "Small Caps", min: 10}, {name: "BDRs", min: 10}, {name: "ETFs", min: 100}]
+                assets: [{name: "Ações Blue Chips", min: 25}, {name: "Ações Dividendos", min: 15}, {name: "Small Caps", min: 10}, {name: "BDRs", min: 10}, {name: "ETFs", min: 100}]
             },
             { 
-                category: "Fundos Imobiliários", 
+                category: "FIIs", 
                 weights: { conservador: 0.2, moderado: 0.2, arrojado: 0.2 },
                 assets: [{name: "FII Galpões", min: 10}, {name: "FII Shoppings", min: 100}, {name: "FII Papel", min: 10}, {name: "FII Tijolo", min: 10}, {name: "FII Híbrido", min: 100}]
             },
             { 
-                category: "Criptoativos", 
+                category: "Cripto", 
                 weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.2 },
                 assets: [{name: "Bitcoin", min: 1}, {name: "Ethereum", min: 1}, {name: "Solana", min: 10}, {name: "Cardano", min: 1}, {name: "Polkadot", min: 5}]
             }
@@ -132,69 +125,79 @@
         function simular() {
             let totalPrincipal = Math.floor(parseFloat(document.getElementById('totalInput').value));
             const perfil = document.getElementById('profile').value;
-            if (!totalPrincipal || totalPrincipal < 1) return alert("Insira um valor válido");
+            
+            if (!totalPrincipal || totalPrincipal <= 0) {
+                alert("Insira um valor positivo.");
+                return;
+            }
 
             const grid = document.getElementById('gridResult');
             grid.innerHTML = '';
             
-            let totalGeralInvestido = 0;
-            let capitalParaRedistribuirEntreCategorias = 0;
+            let totalEfetivoInvestido = 0;
 
-            // FASE 1: Distribuição por Categoria
-            const resultadosCategorias = config.map(c => {
-                let capitalCategoria = totalPrincipal * c.weights[perfil];
-                let ativosAcessiveis = c.assets.filter(a => capitalCategoria / c.assets.length >= a.min);
+            config.forEach(cat => {
+                let capitalCategoria = totalPrincipal * cat.weights[perfil];
+                let countAtivos = cat.assets.length;
+                let valorOriginalPorAtivo = capitalCategoria / countAtivos;
+
+                // Descobre quais ativos desta categoria podem ser comprados
+                let acessiveis = cat.assets.filter(a => valorOriginalPorAtivo >= a.min);
                 
-                // Lógica de Redistribuição Interna
-                let distribuicaoFinalAtivos = [];
-                if (ativosAcessiveis.length > 0) {
-                    let valorPorAtivo = capitalCategoria / ativosAcessiveis.length;
-                    
-                    c.assets.forEach(a => {
-                        const podeSubir = valorPorAtivo >= a.min;
-                        distribuicaoFinalAtivos.push({
-                            name: a.name,
-                            min: a.min,
-                            alocado: podeSubir ? valorPorAtivo : 0,
-                            status: podeSubir ? 'ok' : 'falta_valor'
-                        });
-                        if(podeSubir) totalGeralInvestido += valorPorAtivo;
+                let htmlAtivos = '';
+                let somaCategoria = 0;
+
+                if (acessiveis.length > 0) {
+                    // Redistribui o capital da categoria apenas entre os acessíveis
+                    let novoValorPorAtivo = Math.floor(capitalCategoria / acessiveis.length);
+
+                    cat.assets.forEach(asset => {
+                        const podeComprar = novoValorPorAtivo >= asset.min;
+                        const valorFinal = podeComprar ? novoValorPorAtivo : 0;
+                        
+                        somaCategoria += valorFinal;
+                        
+                        htmlAtivos += `
+                            <div class="asset-item" style="opacity: ${podeComprar ? '1' : '0.4'}">
+                                <div class="asset-header">
+                                    <span>${asset.name}</span>
+                                    <span style="color: ${podeComprar ? 'var(--accent)' : 'var(--danger)'}">${format(valorFinal)}</span>
+                                </div>
+                                <div class="asset-sub">
+                                    <span>Preço Mín: ${format(asset.min)}</span>
+                                    ${podeComprar ? '<span style="color:var(--accent)">ATIVO</span>' : '<span>INDISPONÍVEL</span>'}
+                                </div>
+                            </div>
+                        `;
                     });
                 } else {
-                    // Categoria inteira inacessível
-                    capitalParaRedistribuirEntreCategorias += capitalCategoria;
-                    c.assets.forEach(a => distribuicaoFinalAtivos.push({ name: a.name, min: a.min, alocado: 0, status: 'falta_valor' }));
+                    // Se nenhum for acessível, a categoria inteira fica zerada
+                    cat.assets.forEach(asset => {
+                        htmlAtivos += `
+                            <div class="asset-item" style="opacity: 0.4">
+                                <div class="asset-header"><span>${asset.name}</span><span>R$ 0,00</span></div>
+                                <div class="asset-sub"><span>Preço Mín: ${format(asset.min)}</span><span>VALOR BAIXO</span></div>
+                            </div>
+                        `;
+                    });
                 }
 
-                return { name: c.category, assets: distribuicaoFinalAtivos, weight: c.weights[perfil] };
-            });
-
-            // FASE 2: Renderização
-            resultadosCategorias.forEach(cat => {
-                let htmlAtivos = cat.assets.map(a => `
-                    <div class="asset-item" style="opacity: ${a.alocado > 0 ? '1' : '0.4'}">
-                        <div class="asset-header">
-                            <span>${a.name}</span>
-                            <span style="color: ${a.alocado > 0 ? 'var(--accent)' : 'var(--danger)'}">${format(a.alocado)}</span>
-                        </div>
-                        <div class="asset-sub">
-                            <span>Mínimo: ${format(a.min)}</span>
-                            ${a.alocado > a.min * 1.5 ? '<span class="redistributed-tag">REFORÇADO</span>' : ''}
-                        </div>
-                    </div>
-                `).join('');
+                totalEfetivoInvestido += somaCategoria;
 
                 grid.innerHTML += `
                     <div class="cat-card">
-                        <h3>${cat.name} <span>${(cat.weight*100).toFixed(0)}%</span></h3>
+                        <h3>${cat.category} <span>${(cat.weights[perfil]*100).toFixed(0)}%</span></h3>
                         ${htmlAtivos}
                     </div>
                 `;
             });
 
+            // O saldo que sobrou nunca será negativo pois totalEfetivoInvestido é soma de partes do total
+            let saldoSobrou = totalPrincipal - totalEfetivoInvestido;
+
             document.getElementById('statusArea').style.display = 'flex';
-            document.getElementById('statInvested').innerText = format(totalGeralInvestido);
-            document.getElementById('statLeft').innerText = format(totalPrincipal - totalGeralInvestido);
+            document.getElementById('statInvested').innerText = format(totalEfetivoInvestido);
+            document.getElementById('statLeft').innerText = format(saldoSobrou);
         }
     </script>
 </body>
