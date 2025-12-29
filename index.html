@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliTech | Simulador de Precisão</title>
+    <title>AliTech | Alocação Total</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -11,14 +11,12 @@
             --secondary: #172a45;
             --accent: #64ffda;
             --gold: #fcc419;
-            --text-light: #ccd6f6;
-            --text-gray: #8892b0;
-            --danger: #ff4d4d;
             --bg-card: #112240;
+            --text: #ccd6f6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--primary); color: var(--text-light); }
+        body { background-color: var(--primary); color: var(--text); }
 
         header {
             background: rgba(10, 25, 47, 0.95); padding: 1rem 5%;
@@ -29,175 +27,150 @@
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); letter-spacing: 2px; }
 
         .hero { padding: 140px 5% 40px; text-align: center; }
-        .hero h1 { font-size: 2.5rem; color: #fff; margin-bottom: 10px; }
-
+        
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
         .control-panel {
             background: var(--bg-card); padding: 30px; border-radius: 12px;
             border: 1px solid var(--secondary); margin-bottom: 40px; text-align: center;
         }
+
         input[type="number"] {
-            padding: 15px; width: 280px; border-radius: 5px; border: 1px solid var(--secondary);
+            padding: 15px; width: 300px; border-radius: 5px; border: 1px solid var(--secondary);
             background: var(--primary); color: #fff; font-size: 1.2rem; outline: none; margin-bottom: 10px;
         }
-        select { padding: 15px; background: var(--primary); color: #fff; border-radius: 5px; border: 1px solid var(--secondary); margin-right: 10px; }
-        
+
         .btn-calc {
-            background: var(--accent); color: var(--primary); padding: 15px 30px;
+            background: var(--accent); color: var(--primary); padding: 15px 35px;
             border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
 
-        .status-bar {
-            display: flex; justify-content: space-around; background: var(--secondary);
-            padding: 20px; border-radius: 8px; margin-bottom: 30px; border-bottom: 3px solid var(--accent);
+        /* BARRA DE STATUS 100% */
+        .summary-bar {
+            background: var(--accent); color: var(--primary);
+            padding: 20px; border-radius: 8px; margin-bottom: 30px;
+            display: none; justify-content: space-around; font-weight: 900; font-size: 1.3rem;
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.2);
         }
-        .status-item span { display: block; font-size: 0.75rem; color: var(--text-gray); text-transform: uppercase; }
-        .status-item strong { font-size: 1.2rem; color: var(--white); }
 
-        .categories-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .cat-card { background: var(--bg-card); padding: 25px; border-radius: 10px; border-top: 4px solid var(--accent); }
-        .cat-card h3 { color: var(--gold); margin-bottom: 20px; font-size: 1.1rem; display: flex; justify-content: space-between; }
-        
-        .asset-item { padding: 12px 0; border-bottom: 1px solid #1d2d47; }
-        .asset-header { display: flex; justify-content: space-between; font-weight: bold; }
-        .asset-sub { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-gray); margin-top: 4px; }
-        
-        footer { padding: 40px; text-align: center; font-size: 0.8rem; color: var(--text-gray); border-top: 1px solid var(--secondary); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .card { background: var(--bg-card); padding: 25px; border-radius: 10px; border-left: 5px solid var(--accent); }
+        .card h3 { color: var(--gold); margin-bottom: 15px; border-bottom: 1px solid #233554; padding-bottom: 10px; }
+
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1d2d47; }
+        .item:last-child { border: none; }
+        .val { color: var(--accent); font-weight: bold; }
+        .status-tag { font-size: 0.7rem; display: block; margin-top: 3px; }
+
+        footer { padding: 40px; text-align: center; font-size: 0.8rem; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">AliTech</div>
-    </header>
+    <header><div class="logo">AliTech</div></header>
 
     <section class="hero">
-        <h1>Simulador de Carteira AliTech</h1>
-        <p>Distribuição inteligente com trava de segurança para saldo residual negativo.</p>
+        <h1>Simulador 100% Alocado</h1>
+        <p>Ajuste dinâmico de capital: o total investido será exatamente o valor do seu aporte.</p>
     </section>
 
     <div class="container">
         <div class="control-panel">
-            <select id="profile">
-                <option value="conservador">Conservador</option>
-                <option value="moderado" selected>Moderado</option>
-                <option value="arrojado">Arrojado</option>
-            </select>
-            <input type="number" id="totalInput" placeholder="Valor Total R$" min="1">
+            <input type="number" id="inputValue" placeholder="Valor Total (R$)" min="10">
             <button class="btn-calc" onclick="simular()">GERAR CARTEIRA</button>
         </div>
 
-        <div id="statusArea" class="status-bar" style="display: none;">
-            <div class="status-item"><span>Total Investido</span><strong id="statInvested">R$ 0</strong></div>
-            <div class="status-item"><span>Saldo que Sobrou</span><strong id="statLeft" style="color: var(--gold);">R$ 0</strong></div>
+        <div id="summary" class="summary-bar">
+            <span>TOTAL INVESTIDO: <span id="totalLabel">R$ 0,00</span></span>
         </div>
 
-        <div id="gridResult" class="categories-container"></div>
+        <div id="results" class="grid"></div>
     </div>
 
+    <footer>© 2025 AliTech - Simulador Financeiro Educativo</footer>
+
     <script>
-        const config = [
-            { 
-                category: "Renda Fixa", 
-                weights: { conservador: 0.6, moderado: 0.4, arrojado: 0.2 },
-                assets: [{name: "Tesouro Selic", min: 35}, {name: "Tesouro IPCA+", min: 40}, {name: "CDB 110%", min: 1}, {name: "LCI", min: 50}, {name: "LCA", min: 50}]
-            },
-            { 
-                category: "Renda Variável", 
-                weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.4 },
-                assets: [{name: "Ações Blue Chips", min: 25}, {name: "Ações Dividendos", min: 15}, {name: "Small Caps", min: 10}, {name: "BDRs", min: 10}, {name: "ETFs", min: 100}]
-            },
-            { 
-                category: "FIIs", 
-                weights: { conservador: 0.2, moderado: 0.2, arrojado: 0.2 },
-                assets: [{name: "FII Galpões", min: 10}, {name: "FII Shoppings", min: 100}, {name: "FII Papel", min: 10}, {name: "FII Tijolo", min: 10}, {name: "FII Híbrido", min: 100}]
-            },
-            { 
-                category: "Cripto", 
-                weights: { conservador: 0.1, moderado: 0.2, arrojado: 0.2 },
-                assets: [{name: "Bitcoin", min: 1}, {name: "Ethereum", min: 1}, {name: "Solana", min: 10}, {name: "Cardano", min: 1}, {name: "Polkadot", min: 5}]
-            }
+        const categories = [
+            { name: "Renda Fixa", assets: [{n: "Tesouro Selic", m: 35}, {n: "CDB 110% CDI", m: 1}, {n: "LCI", m: 50}] },
+            { name: "Ações", assets: [{n: "Blue Chips", m: 20}, {n: "Dividendos", m: 15}, {n: "Small Caps", m: 10}] },
+            { name: "FIIs", assets: [{n: "Logística", m: 10}, {n: "Shoppings", m: 100}, {n: "Papel", m: 10}] },
+            { name: "Cripto", assets: [{n: "Bitcoin", m: 1}, {n: "Ethereum", m: 1}, {n: "Solana", m: 10}] }
         ];
 
         function format(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
         function simular() {
-            let totalPrincipal = Math.floor(parseFloat(document.getElementById('totalInput').value));
-            const perfil = document.getElementById('profile').value;
-            
-            if (!totalPrincipal || totalPrincipal <= 0) {
-                alert("Insira um valor positivo.");
+            const inputVal = parseFloat(document.getElementById('inputValue').value);
+            if (!inputVal || inputVal <= 0) return alert("Insira um valor.");
+
+            const resultsGrid = document.getElementById('results');
+            resultsGrid.innerHTML = '';
+
+            // 1. Identificar ativos que podem ser comprados com o valor TOTAL
+            let ativosPossiveis = [];
+            categories.forEach(cat => {
+                cat.assets.forEach(as => {
+                    if (inputVal >= as.m) ativosPossiveis.push(as);
+                });
+            });
+
+            if (ativosPossiveis.length === 0) {
+                alert("Valor insuficiente para os mínimos de mercado.");
                 return;
             }
 
-            const grid = document.getElementById('gridResult');
-            grid.innerHTML = '';
-            
-            let totalEfetivoInvestido = 0;
+            // 2. Cálculo da fatia por ativo
+            // Usamos Math.floor para evitar dízimas e depois ajustamos a diferença no último ativo
+            let valorBase = Math.floor((inputVal / ativosPossiveis.length) * 100) / 100;
+            let totalDistribuido = 0;
 
-            config.forEach(cat => {
-                let capitalCategoria = totalPrincipal * cat.weights[perfil];
-                let countAtivos = cat.assets.length;
-                let valorOriginalPorAtivo = capitalCategoria / countAtivos;
-
-                // Descobre quais ativos desta categoria podem ser comprados
-                let acessiveis = cat.assets.filter(a => valorOriginalPorAtivo >= a.min);
-                
+            categories.forEach(cat => {
                 let htmlAtivos = '';
-                let somaCategoria = 0;
+                let somaCat = 0;
 
-                if (acessiveis.length > 0) {
-                    // Redistribui o capital da categoria apenas entre os acessíveis
-                    let novoValorPorAtivo = Math.floor(capitalCategoria / acessiveis.length);
+                cat.assets.forEach(as => {
+                    const isOk = ativosPossiveis.includes(as);
+                    let valorAlocado = isOk ? valorBase : 0;
+                    
+                    // Se for o último ativo da lista global, compensa a diferença de centavos
+                    if (isOk && (totalDistribuido + valorAlocado).toFixed(2) != inputVal.toFixed(2)) {
+                        if (as === ativosPossiveis[ativosPossiveis.length - 1]) {
+                           valorAlocado = inputVal - totalDistribuido;
+                        }
+                    }
 
-                    cat.assets.forEach(asset => {
-                        const podeComprar = novoValorPorAtivo >= asset.min;
-                        const valorFinal = podeComprar ? novoValorPorAtivo : 0;
-                        
-                        somaCategoria += valorFinal;
-                        
-                        htmlAtivos += `
-                            <div class="asset-item" style="opacity: ${podeComprar ? '1' : '0.4'}">
-                                <div class="asset-header">
-                                    <span>${asset.name}</span>
-                                    <span style="color: ${podeComprar ? 'var(--accent)' : 'var(--danger)'}">${format(valorFinal)}</span>
-                                </div>
-                                <div class="asset-sub">
-                                    <span>Preço Mín: ${format(asset.min)}</span>
-                                    ${podeComprar ? '<span style="color:var(--accent)">ATIVO</span>' : '<span>INDISPONÍVEL</span>'}
-                                </div>
+                    totalDistribuido += valorAlocado;
+                    somaCat += valorAlocado;
+
+                    htmlAtivos += `
+                        <div class="item" style="opacity: ${isOk ? '1' : '0.4'}">
+                            <div>
+                                <strong>${as.n}</strong>
+                                <span class="status-tag" style="color:${isOk ? 'var(--accent)' : 'var(--danger)'}">
+                                    ${isOk ? 'ATIVO INCLUSO' : 'VALOR ABAIXO DO MÍNIMO'}
+                                </span>
                             </div>
-                        `;
-                    });
-                } else {
-                    // Se nenhum for acessível, a categoria inteira fica zerada
-                    cat.assets.forEach(asset => {
-                        htmlAtivos += `
-                            <div class="asset-item" style="opacity: 0.4">
-                                <div class="asset-header"><span>${asset.name}</span><span>R$ 0,00</span></div>
-                                <div class="asset-sub"><span>Preço Mín: ${format(asset.min)}</span><span>VALOR BAIXO</span></div>
-                            </div>
-                        `;
-                    });
-                }
+                            <span class="val">${format(valorAlocado)}</span>
+                        </div>
+                    `;
+                });
 
-                totalEfetivoInvestido += somaCategoria;
-
-                grid.innerHTML += `
-                    <div class="cat-card">
-                        <h3>${cat.category} <span>${(cat.weights[perfil]*100).toFixed(0)}%</span></h3>
+                resultsGrid.innerHTML += `
+                    <div class="card">
+                        <h3>${cat.name}</h3>
                         ${htmlAtivos}
+                        <div style="margin-top:10px; text-align:right; font-size:0.8rem; color:var(--gold)">
+                            Subtotal: ${format(somaCat)}
+                        </div>
                     </div>
                 `;
             });
 
-            // O saldo que sobrou nunca será negativo pois totalEfetivoInvestido é soma de partes do total
-            let saldoSobrou = totalPrincipal - totalEfetivoInvestido;
-
-            document.getElementById('statusArea').style.display = 'flex';
-            document.getElementById('statInvested').innerText = format(totalEfetivoInvestido);
-            document.getElementById('statLeft').innerText = format(saldoSobrou);
+            // 3. Exibir Resumo Final
+            document.getElementById('summary').style.display = 'flex';
+            document.getElementById('totalLabel').innerText = format(inputVal);
+            
+            window.scrollTo({ top: document.getElementById('summary').offsetTop - 100, behavior: 'smooth' });
         }
     </script>
 </body>
